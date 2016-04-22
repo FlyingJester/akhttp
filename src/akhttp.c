@@ -3,8 +3,71 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#define MAX_REQUEST_SIZE 8192
+
 static unsigned is_digit(char c){
     return c <= '9' && c>= '0';
+}
+
+static const char *request_name(enum AK_HTTPMethod m){
+    switch(m){
+        case AK_eGet:
+            return "GET";
+        case AK_eHead:
+            return "HEAD";
+        case AK_eDelete:
+            return "DELETE";
+        case AK_eOptions:
+            return "OPTIONS";
+        case AK_eTrace:
+            return "TRACE";
+        case AK_ePost:
+            return "POST";
+        case AK_ePut:
+            return "PUT";
+        case AK_eConnect:
+            return "CONNECT";
+        case AK_ePatch:
+            return "PATCH";
+    }
+    
+    assert(NULL && "Invalid HTTP method");
+    return "NIGHTS ";
+};
+
+static unsigned is_lower_case(char c){
+    return c >= 'a' && c<= 'z';
+}
+
+static enum AK_HTTPMethod get_request_type(const char *str, int *offset){
+    char buffer[8];
+    unsigned i = 0;
+    for(;i<8; i++){
+        if(is_lower_case(buffer[i] = str[i]))
+            buffer[i] += (int)'A' - (int)'a';
+        
+        if(str[0] == '\0')
+            break;
+    }
+    
+    for(i=0; i<AK_eInvalidMethod; i++){
+        int n = 0;
+        const char *const other = request_name(i);
+        do{
+            if(other[n] != str[n]){
+                n = -1;
+                break;
+            }
+        }while(other[++n] != '\0');
+        
+        if(n && (str[n] == ' ' || str[n] == '\t')){
+            offset[0] = n+1;
+            return i;
+        }
+    }
+    
+    return AK_eInvalidMethod;
+    
 }
 
 unsigned AK_MethodRequestHasBody(enum AK_HTTPMethod m){
@@ -54,9 +117,17 @@ unsigned AK_RequestMethodResponseHasBody(const struct AK_HTTPRequest *r){
 }
 
 unsigned AK_ParseHTTPRequest(struct AK_HTTPRequest *out, const char *msg){
-    return 1;
+    return AK_ParseHTTPRequestN(out, msg, strnlen(msg, MAX_REQUEST_SIZE + 1));
 }
 
+unsigned AK_ParseHTTPRequestN(
+    struct AK_HTTPRequest *out, const char *msg, unsigned len){
+    if(len > MAX_REQUEST_SIZE)
+        return 1;
+    
+    
+    
+}
 unsigned AK_ParseHTTPResponse(struct AK_HTTPResponse *rsp, const char *msg){
     return AK_ParseHTTPResponseN(rsp, msg, strlen(msg));
 }

@@ -36,7 +36,8 @@ enum AK_HTTPMethod {
     AK_eConnect,
     AK_eOptions,
     AK_eTrace,
-    AK_ePatch
+    AK_ePatch,
+    AK_eInvalidMethod
 };
 
 /**
