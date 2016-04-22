@@ -32,7 +32,11 @@ enum AK_HTTPMethod {
     AK_ePost,
     AK_eHead,
     AK_ePut,
-    AK_eDelete
+    AK_eDelete,
+    AK_eConnect,
+    AK_eOptions,
+    AK_eTrace,
+    AK_ePatch
 };
 
 /**
@@ -64,6 +68,11 @@ struct AK_HTTPResponse{
     
     struct AK_Field msg; /**< HTTP response message */
 };
+
+unsigned AK_MethodRequestHasBody(enum AK_HTTPMethod m);
+unsigned AK_RequestMethodRequestHasBody(const struct AK_HTTPRequest *r);
+unsigned AK_MethodResponseHasBody(enum AK_HTTPMethod m);
+unsigned AK_RequestMethodResponseHasBody(const struct AK_HTTPRequest *r);
 
 /**
  * @brief Retrieves a single field from a response.

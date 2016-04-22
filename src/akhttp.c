@@ -7,6 +7,52 @@ static unsigned is_digit(char c){
     return c <= '9' && c>= '0';
 }
 
+unsigned AK_MethodRequestHasBody(enum AK_HTTPMethod m){
+    switch(m){
+        case AK_eGet:
+        case AK_eHead:
+        case AK_eDelete:
+        case AK_eOptions:
+        case AK_eTrace:
+            return 0u;
+        case AK_ePost:
+        case AK_ePut:
+        case AK_eConnect:
+        case AK_ePatch:
+            return 1u;
+    }
+    
+    assert(NULL && "Invalid HTTP method");
+    return 0u; 
+}
+
+unsigned AK_RequestMethodRequestHasBody(const struct AK_HTTPRequest *r){
+    return AK_MethodRequestHasBody(r->method); 
+}
+
+unsigned AK_MethodResponseHasBody(enum AK_HTTPMethod m){
+    switch(m){
+        case AK_eHead:
+            return 0u;
+        case AK_eGet:
+        case AK_eDelete:
+        case AK_eOptions:
+        case AK_ePost:
+        case AK_ePut:
+        case AK_eConnect:
+        case AK_ePatch:
+        case AK_eTrace:
+            return 1u;
+    }
+    
+    assert(NULL && "Invalid HTTP method");
+    return 0u; 
+}
+
+unsigned AK_RequestMethodResponseHasBody(const struct AK_HTTPRequest *r){
+    return AK_MethodResponseHasBody(r->method);
+}
+
 unsigned AK_ParseHTTPRequest(struct AK_HTTPRequest *out, const char *msg){
     return 1;
 }
@@ -14,7 +60,10 @@ unsigned AK_ParseHTTPRequest(struct AK_HTTPRequest *out, const char *msg){
 unsigned AK_ParseHTTPResponse(struct AK_HTTPResponse *rsp, const char *msg){
     return AK_ParseHTTPResponseN(rsp, msg, strlen(msg));
 }
-    
+
+unsigned AK_MethodRequestHasBody(enum AK_HTTPMethod m);
+unsigned AK_MethodResponseHasBody(enum AK_HTTPMethod m);
+
 unsigned AK_ParseHTTPResponseN(struct AK_HTTPResponse *rsp, const char *msg, unsigned len){
     const char *end;
 #define LEN_SYNC() \
