@@ -1,4 +1,4 @@
-akhttp = SharedLibrary("akhttp", ["akhttp.c"], CFLAGS = " -ansi -O2 -static-libgcc ")
+akhttp = SharedLibrary("akhttp", ["akhttp.c"], CFLAGS = " -ansi -O2 -g -static-libgcc ")
 bufferfile = StaticLibrary("bufferfile", ["bufferfile/bufferfile_mmap.c"])
 
-linetest = Program("linetest", ["linetest.c"], LIBS = [akhttp, bufferfile])
+linetest = Program("linetest", ["linetest.c"], LIBS = [akhttp, bufferfile], CFLAGS = " -g ")

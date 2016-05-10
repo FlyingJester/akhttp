@@ -54,6 +54,10 @@ struct AK_HTTPRequest{
     unsigned char version_major; /**< HTTP major version */
     unsigned char version_minor; /**< HTTP minor version */
 
+    unsigned num_fields, fields_capacity; /**< field array metadata */
+    struct AK_Field *fields; /**< Array of fields in the request */
+    struct AK_Field *names; /**< Array of names for fields. */
+
     struct AK_Field data; /**< Payload of the request (HTML, JSON, etc) */
     struct AK_Field host; /**< Hostname that sent the request */
 };

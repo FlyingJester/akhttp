@@ -125,8 +125,12 @@ unsigned AK_ParseHTTPRequestN(
     if(len > MAX_REQUEST_SIZE)
         return 1;
     
+    out->num_fields = 0;
+    out->fields_capacity = 8;
+    out->fields = malloc(sizeof(struct AK_Field) * 16);
+    out->names = malloc(sizeof(struct AK_Field) * 16);
     
-    
+    return 0;
 }
 unsigned AK_ParseHTTPResponse(struct AK_HTTPResponse *rsp, const char *msg){
     return AK_ParseHTTPResponseN(rsp, msg, strlen(msg));
